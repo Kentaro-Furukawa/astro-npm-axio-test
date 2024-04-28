@@ -1,10 +1,27 @@
 ---
 import axios from 'axios';
+import Database from 'better-sqlite3';
 
 const data = await axios.get('https://pokeapi.co/api/v2/pokemon/ditto');
+// console.log(data.data);
+// console.log(data.data.species.name);
 
-console.log(data.data.base_experience);
-console.log(data.data.species.name);
+const db = new Database('mydb.db');
+
+// create table
+db.prepare('CREATE TABLE IF NOT EXISTS times (time TEXT)').run();
+
+// insert time to the db
+const stmt = db.prepare('INSERT INTO times (time) VALUES (?)');
+stmt.run(new Date().toISOString());
+
+// select count of times
+const count = db.prepare('SELECT COUNT(*) as count FROM times').get();
+console.log(count.count);
+
+// select last time
+const lastTime = db.prepare('SELECT time FROM times ORDER BY rowid DESC LIMIT 1').get();
+console.log(lastTime.time);
 
 ---
 
@@ -12,5 +29,7 @@ console.log(data.data.species.name);
   <body>
     <h1>My Astro Page</h1>
     <p>Data from API: {data.data.species.name}</p>
+		<p>Count of times: {count.count}</p>
+		<p>Last time: {lastTime.time}</p>
   </body>
 </html>
