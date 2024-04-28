@@ -1,0 +1,16 @@
+---
+import axios from 'axios';
+
+const data = await axios.get('https://pokeapi.co/api/v2/pokemon/ditto');
+
+console.log(data.data.base_experience);
+console.log(data.data.species.name);
+
+---
+
+<html>
+  <body>
+    <h1>My Astro Page</h1>
+    <p>Data from API: {data.data.species.name}</p>
+  </body>
+</html>
